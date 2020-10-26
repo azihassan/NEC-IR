@@ -10,7 +10,6 @@ avr-gcc -c \
         -mmcu=atmega328p \
         -DF_CPU=16000000L \
         -I/usr/include/simavr \
-        -Wl,--undefined=_mmcu,--section-start=.mmcu=0x910000 \
         main.c -o main.o &&
 
 avr-gcc -Os \
@@ -22,7 +21,6 @@ avr-gcc -Os \
         -fdata-sections \
         -I/usr/include/simavr \
         -Wl,--gc-sections \
-        -Wl,--undefined=_mmcu,--section-start=.mmcu=0x910000 \
         main.o -o main.elf &&
 
 avr-objcopy -O ihex -R .eeprom main.elf main.hex &&
