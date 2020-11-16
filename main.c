@@ -11,42 +11,39 @@ const struct avr_mmcu_vcd_trace_t _mytrace[]  _MMCU_ = {
     { AVR_MCU_VCD_SYMBOL("PB5"), .mask = (1 << PB5), .what = (void*)&PORTB, },
 };
 
-void modulate(int pin)
+void modulate(int pin, int microseconds)
 {
-    for(int i = 0; i < 21; i++)
+    for(int i = 0; i < microseconds / 26; i++)
     {
         PORTB |= (1 << pin);
-        _delay_us(8.575);
+        _delay_us(13);
         PORTB &= ~(1 << pin);
-        _delay_us(17.725);
+        _delay_us(13);
     }
 }
 
 void mark(int pin)
 {
-    modulate(pin);
-    _delay_us(1687.5);
+    modulate(pin, 560);
+    _delay_us(1680);
 }
 
 void space(int pin)
 {
-    modulate(pin);
-    _delay_us(562.5);
+    modulate(pin, 560);
+    _delay_us(560);
 }
 
 void init_message(int pin)
 {
-    for(int i = 0; i < 17; i++)
-    {
-        modulate(pin);
-    }
+    modulate(pin, 9000);
     PORTB &= ~(1 << pin);
     _delay_us(4500);
 }
 
 void finish_message(int pin)
 {
-    modulate(pin);
+    modulate(pin, 560);
     PORTB &= ~(1 << pin);
 }
 
@@ -108,5 +105,8 @@ int main(void)
     send_message(PB5, ADDRESS, UP);
     _delay_ms(1000);
     send_message(PB5, ADDRESS, OK);
+
+    sleep_cpu();
+
     return 0;
 }
